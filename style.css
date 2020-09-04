@@ -1,0 +1,34 @@
+body {
+    font-family: 'Raleway', sans-serif;
+    background-color: lightgray;
+}
+
+header {
+    display: flex;
+    border-bottom: 1px solid gray;
+    background-color: lightskyblue;
+    width: 100vw;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    justify-content: center;
+}
+
+
+
+#book-container {
+
+    display: grid;
+    margin-top: 15vh;
+    justify-content: center;
+    text-align: center;
+    grid-gap: 1vmin;
+    grid-template-columns: 30vw 30vw 30vw;
+    grid-template-rows: 20vh 20vh 20vh 20vh;
+}
+
+#book-container h2 {
+    margin-block-end: 0px;
+    margin-block-start: 1vmin;
+    
+}
