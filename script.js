@@ -1,15 +1,11 @@
 
 
 // Book object
-function Book(title, author, pageAmt, isRead) {
+function Book(title, author, pageAmt, isRead, ISBN = '', pubDate = '0/0/0', notes = '') {
     this.title = title;
     this.author = author;
     this.pageAmt = pageAmt;
     this.isRead = isRead;
-}
-
-Book.prototype.getBook = function() {
-    return this;
 }
 
 // Function to add a book to the array
@@ -69,8 +65,17 @@ function editRows(bookArray, columnAmt) {
 
 }
 
+
+// Animation bool false if animation hasn't occured yet
+// Book Chosen bool false if no book has been chosen yet
+
 let animOpen = false;
 let bookChosen = false;
+
+// Animate the click book container to open
+// Send chosen book to the click book container
+
+// IN DEVELOPMENT VERY BUGGY
 
 function animateClickBook(book) {
     clickBookDiv = document.querySelector('#click-book-container');
@@ -123,35 +128,73 @@ function animateClickBook(book) {
 
 }
 
+// returns the book in the array by the proper index
+// this returns the book not the element containing the information in the book
+
+
 function getBookById(index) {
     return myBooks[index];
 }
 
+
+// Creates the focused element when a book is chosen
+
+// remove from library button, close button
+
+// IN DEVELOPMENT - VERY BUGGY
+
 function makeFocusBook(book) {
     focusBook = document.createElement('div');
-    focusBook.style.backgroundColor = 'lightslategray';
-    focusBook.style.display = 'flex';
-    focusBook.style.flexDirection = 'column'
+    focusBook.style.backgroundColor = 'white';
+    focusBook.style.display = 'grid';
+    // focusBook.style.flexDirection = 'column'
     focusBook.style.border = "1px solid gray"
     // focusBook.style.alignContent = 'center'
     focusBook.style.textAlign = 'center'
+
+    focusBook.style.gridTemplateColumns = '50% 50%'
+    focusBook.style.gridTemplateRows    = '20px 100px 40px 60px 60px 60px  60px'
+
+    focusCloseDiv = document.createElement('div');
+    // focusCloseDiv.style.justifyContent = 'end'
+    focusCloseDiv.style.gridColumnStart = '1'
+    focusCloseDiv.style.gridColumnEnd   = '3'
+    focusCloseDiv.style.display = 'flex'
+    focusCloseDiv.style.justifyContent = 'flex-end'
+
+    focusClose = document.createElement('div');
+    focusClose.textContent = 'x';
+    focusClose.height = '1vw'
+    focusClose.width = '1vw'
+    focusClose.style.border = 'solid 1px black'
+    focusClose.style.fontSize = '1em'
+    focusClose.style.marginRight = '5vw'
+
+    focusCloseDiv.appendChild(focusClose)
+
+
+    focusBook.appendChild(focusCloseDiv)
     
     focusTitle = document.createElement('h2');
-    focusTitle.style.fontSize = '5em'
+    focusTitle.style.fontSize = '4em'
     focusTitle.textContent = book.title;
     focusTitle.style.marginBottom = '0px';
+    focusTitle.style.gridColumnStart = '1'
+    focusTitle.style.gridColumnEnd   = '3'
 
     focusBook.appendChild(focusTitle);
 
     focusAuthor = document.createElement('p');
     focusAuthor.style.fontSize = '2em'
-    focusAuthor.style.marginBottom = '0px'
+    focusAuthor.style.marginBottom = '20px'
+    focusAuthor.style.gridColumnStart = '1'
+    focusAuthor.style.gridColumnEnd   = '3'
     focusAuthor.textContent = `by ${book.author}`;
 
     focusBook.appendChild(focusAuthor)
 
     focusPgAmt = document.createElement('p');
-    focusPgAmt.style.fontSize = '1.5em'
+    // focusPgAmt.style.fontSize = '1.5em'
     focusPgAmt.style.marginBottom = '0px'
     focusPgAmt.textContent = `Length - ${book.pageAmt} pages`
 
@@ -163,11 +206,14 @@ function makeFocusBook(book) {
 
     focusBook.appendChild(focusIsRead)
 
+
+
     return focusBook;
 }
 
-function renderBooks(bookArray) {
 
+// Render all the books in my array to the HTML doc
+function renderBooks(bookArray) {
 
     editColumns(bookArray);
 
@@ -185,12 +231,13 @@ function renderBooks(bookArray) {
         // bookCont.id = book.title;
         bookCont.style.display = 'flex';
         bookCont.style.flexDirection = 'column';
-        bookCont.style.border = "1px solid gray"
+        bookCont.style.border = "1px solid #283618"
 
         bookCont.id = bkIndex ++;
 
         // Add book title to the container
         bookHeader = document.createElement('h2');
+        bookHeader.style.marginTop = '20px'
         bookHeader.textContent = book.title;
         bookCont.appendChild(bookHeader);
 
@@ -205,7 +252,7 @@ function renderBooks(bookArray) {
         // bookPageAmt.textContent = `Page Amount : ${book.pageAmt}`;
         // bookCont.appendChild(bookPageAmt);
 
-        bookCont.style.backgroundColor = 'lightskyblue';
+        bookCont.style.backgroundColor = '#606c38';
 
         // add each book to book container
         bookDiv.appendChild(bookCont);
@@ -216,10 +263,12 @@ function renderBooks(bookArray) {
     books.forEach(book => {
     
         book.onmouseover = function() {
-            book.style.backgroundColor = 'lightslategray'
+            book.style.backgroundColor = '#283618'
+            book.style.color = '#fefae0'
         }
         book.onmouseout = function() {
-            book.style.backgroundColor = 'lightskyblue'
+            book.style.backgroundColor = '#606c38'
+            book.style.color = 'black'
         }
 
         book.addEventListener('click', function() {
@@ -236,6 +285,7 @@ function renderBooks(bookArray) {
 
 // Book container 
 bookDiv = document.querySelector('#book-container');
+
 // Amount of rows on screen 
 let rowAmt = 0;
 let columnAmt = 3;

@@ -5,18 +5,21 @@ body {
 
 header {
     display: flex;
-    border-bottom: 1px solid gray;
-    background-color: #87cefa;
+    border-bottom: 1px solid black;
+    background-color: #283618;
     width: 100vw;
     position: fixed;
     height: 10vh;
     top: 0px;
     left: 0px;
     justify-content: center;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
 }
 
 header h1 {
     font-size: 5vh;
+    color: #fefae0;
     margin-block-start: 3vh;
     margin-block-end: 1vh;
 }
@@ -32,7 +35,7 @@ header h1 {
 #book-container {
 
     display: grid;
-    margin-top: 14vh;
+    margin-top: 0px;
     justify-content: center;
     text-align: center;
     grid-gap: 1vmin;
@@ -51,10 +54,28 @@ header h1 {
     margin-right: .5vw;
 }
 
+#lib-container {
+    margin-top: 12vh;
+
+}
+
+#btn-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 2vh;
+}
+
+#btn-container button {
+    width: 10vw;
+    height: 40px;
+    margin-left: 1vw;
+    margin-right: 1vw;
+}
+
 #click-book-container {
     display: grid;
     justify-content: center;
-    margin-top: 14vh;
     grid-template-columns: 90vw;
 
     /* only do if has information */
