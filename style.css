@@ -1,6 +1,6 @@
 body {
     font-family: 'Raleway', sans-serif;
-    background-color: lightgray;
+    background-color: #dda15e;
 }
 
 header {
@@ -35,7 +35,7 @@ header h1 {
 #book-container {
 
     display: grid;
-    margin-top: 0px;
+    margin-top: 2vh;
     justify-content: center;
     text-align: center;
     grid-gap: 1vmin;
@@ -71,6 +71,10 @@ header h1 {
     height: 40px;
     margin-left: 1vw;
     margin-right: 1vw;
+    background-color: #bc6c25;
+    font-size: 1em;
+    width: 100px;
+    height: 40px;
 }
 
 #click-book-container {
