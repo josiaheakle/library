@@ -8,15 +8,30 @@ function Book(title, author, pageAmt, isRead) {
     this.isRead = isRead;
 }
 
+Book.prototype.getBook = function() {
+    return this;
+}
+
 // Function to add a book to the array
 function addBookToLibrary(book, array) {
     array.push(book);
     return array;
 }
 
-function editColumns(columnNeeded) {
+// edit amount of columns if the width is too small/ too large
+function editColumns(bookArray) {
 
-    switch(columnNeeded) {
+    // decide how many rows and columns are needed
+    let bodyWidth = document.body.clientWidth + 31;
+    if (bodyWidth >= 1050) {
+        columnAmt = 3;
+    } else if (bodyWidth < 1050 && bodyWidth >= 700) {
+        columnAmt = 2;
+    } else if (bodyWidth < 700) {
+        columnAmt = 1;
+    }  
+
+    switch(columnAmt) {
         case(3):
             columnSize = `30vw`
             break;
@@ -29,12 +44,11 @@ function editColumns(columnNeeded) {
     }
 
     let columnStr = '';
-    for(let i=0; i<columnNeeded; i++) {
-        // console.log(`columnNeeded, columnStr: ${columnStr}`)
+    for(let i=0; i<columnAmt; i++) {
         columnStr = `${columnStr} ${columnSize}`
     }
     
-    editRows(myBooks, columnNeeded);
+    editRows(myBooks, columnAmt);
 
     bookDiv.style.gridTemplateColumns = `${columnStr}`
 }
@@ -55,33 +69,125 @@ function editRows(bookArray, columnAmt) {
 
 }
 
+let animOpen = false;
+let bookChosen = false;
+
+function animateClickBook(book) {
+    clickBookDiv = document.querySelector('#click-book-container');
+
+    let id;
+
+    if(animOpen == false) {
+        id = setInterval(frame, 2);
+    }
+
+    let pxAmt = 0;
+    let pxStr = `${pxAmt}px`
+    console.log(`animOpen: ${animOpen}`)
+    // if(animOpen == false) {
+        function frame() {
+            console.log(`animOpen: ${animOpen}`)
+            if(pxAmt == 400) {
+                animOpen = true;
+                clearInterval(id);
+            } else {
+                // console.log(pxStr);
+                pxAmt+=5;
+                pxStr = `${pxAmt}px`
+                clickBookDiv.style.gridTemplateRows = pxStr;
+            }
+        }
+    // }
+
+    let focusBook = makeFocusBook(getBookById(book.id));
+
+
+   
+    
+    // book.style.backgroundColor = 'lightslategray'
+    if(!bookChosen) {
+        clickBookDiv.appendChild(focusBook);
+        bookChosen = true;
+    }
+
+    // console.log(`book.id clicked: ${book.id}`)
+    // let id = setInterval(frame, 5);
+    // let bool = false;
+    // function frame() {
+    //     if (/* check if animation has happened */ bool) {
+    //         clearInterval(id);
+    //     } else {
+    //         book.style.height = '300px';
+    //     }
+    // }
+
+}
+
+function getBookById(index) {
+    return myBooks[index];
+}
+
+function makeFocusBook(book) {
+    focusBook = document.createElement('div');
+    focusBook.style.backgroundColor = 'lightslategray';
+    focusBook.style.display = 'flex';
+    focusBook.style.flexDirection = 'column'
+    focusBook.style.border = "1px solid gray"
+    // focusBook.style.alignContent = 'center'
+    focusBook.style.textAlign = 'center'
+    
+    focusTitle = document.createElement('h2');
+    focusTitle.style.fontSize = '5em'
+    focusTitle.textContent = book.title;
+    focusTitle.style.marginBottom = '0px';
+
+    focusBook.appendChild(focusTitle);
+
+    focusAuthor = document.createElement('p');
+    focusAuthor.style.fontSize = '2em'
+    focusAuthor.style.marginBottom = '0px'
+    focusAuthor.textContent = `by ${book.author}`;
+
+    focusBook.appendChild(focusAuthor)
+
+    focusPgAmt = document.createElement('p');
+    focusPgAmt.style.fontSize = '1.5em'
+    focusPgAmt.style.marginBottom = '0px'
+    focusPgAmt.textContent = `Length - ${book.pageAmt} pages`
+
+    focusBook.appendChild(focusPgAmt);
+
+    focusIsRead = document.createElement('p');
+    focusIsRead.style.fontSize = '1.5em'
+    focusIsRead.textContent = ((book.isRead) ? `Read` : `Not Read`);
+
+    focusBook.appendChild(focusIsRead)
+
+    return focusBook;
+}
+
 function renderBooks(bookArray) {
 
-    // decide how many rows and columns are needed
-    let bodyWidth = document.body.clientWidth + 31;
-    // console.log(`Body Width: ${bodyWidth}`)
-    if (bodyWidth >= 950) {
-        columnAmt = 3;
-    } else if (bodyWidth < 950 && bodyWidth >= 620) {
-        columnAmt = 2;
-    } else if (bodyWidth < 620 && bodyWidth >= 340) {
-        columnAmt = 1;
-    }  
-    editColumns(columnAmt);
+
+    editColumns(bookArray);
 
     // For each book, create a container
     // Add title, author to each container,
     // Add animation to make container larger and show more information
     // Render it to screen
 
+    let bkIndex = 0;
+
     myBooks.forEach(book => {
 
         // create container for book information
         bookCont = document.createElement('div');
-        bookCont.id = book.title;
+        // bookCont.id = book.title;
         bookCont.style.display = 'flex';
         bookCont.style.flexDirection = 'column';
         bookCont.style.border = "1px solid gray"
+
+        bookCont.id = bkIndex ++;
 
         // Add book title to the container
         bookHeader = document.createElement('h2');
@@ -99,7 +205,7 @@ function renderBooks(bookArray) {
         // bookPageAmt.textContent = `Page Amount : ${book.pageAmt}`;
         // bookCont.appendChild(bookPageAmt);
 
-        bookCont.style.backgroundColor = 'lightskyblue'
+        bookCont.style.backgroundColor = 'lightskyblue';
 
         // add each book to book container
         bookDiv.appendChild(bookCont);
@@ -115,21 +221,15 @@ function renderBooks(bookArray) {
         book.onmouseout = function() {
             book.style.backgroundColor = 'lightskyblue'
         }
+
+        book.addEventListener('click', function() {
+            animateClickBook(book);
+        });
     
     });
 
-    const body = document.querySelector('body');
     window.addEventListener("resize", function() {
-        bodyWidth = document.body.clientWidth + 31;
-        // console.log(`Body Width: ${bodyWidth}`)
-        if (bodyWidth >= 950) {
-            columnAmt = 3;
-        } else if (bodyWidth < 900 && bodyWidth >= 620) {
-            columnAmt = 2;
-        } else if (bodyWidth < 620 && bodyWidth >= 340) {
-            columnAmt = 1;
-        }  
-        editColumns(columnAmt);
+        editColumns(bookArray);
     });
 
 }

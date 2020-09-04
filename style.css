@@ -50,3 +50,13 @@ header h1 {
     margin-left: .5vw;
     margin-right: .5vw;
 }
+
+#click-book-container {
+    display: grid;
+    justify-content: center;
+    margin-top: 14vh;
+    grid-template-columns: 90vw;
+
+    /* only do if has information */
+    grid-template-rows: 0px;
+}
