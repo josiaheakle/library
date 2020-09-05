@@ -6,6 +6,9 @@ function Book(title, author, pageAmt, isRead, ISBN = '', pubDate = '0/0/0', note
     this.author = author;
     this.pageAmt = pageAmt;
     this.isRead = isRead;
+    this.isbn = ISBN;
+    this.pubDate = pubDate;
+    this.notes = notes;
 }
 
 // Function to add a book to the array
@@ -20,15 +23,22 @@ function getBookById(index) {
     return myBooks[index];
 }
 
+let inputSize = '50vw';
 // edit amount of columns if the width is too small/ too large
 function editColumns(bookArray) {
     // decide how many rows and columns are needed
     let bodyWidth = document.body.clientWidth + 31;
+    
+    const input = document.querySelectorAll('input')
     if (bodyWidth >= 1050) {
+        
+        inputSize = '50vw'
         columnAmt = 3;
     } else if (bodyWidth < 1050 && bodyWidth >= 700) {
+        inputSize = '65vw'
         columnAmt = 2;
     } else if (bodyWidth < 700) {
+        inputSize = '80vw'
         columnAmt = 1;
     }  
     switch(columnAmt) {
@@ -42,6 +52,17 @@ function editColumns(bookArray) {
             columnSize = `90vw`
             break;
     }
+    // if(input) {
+        input.forEach(cont => {
+            if(cont.value == 'Submit') {
+                cont.style.width = inputSize/2;
+            } else if (cont.type == 'checkbox') {
+                
+            } else {
+                cont.style.width = inputSize;
+            }
+        });
+    // }
     let columnStr = '';
     for(let i=0; i<columnAmt; i++) {
         columnStr = `${columnStr} ${columnSize}`
@@ -64,24 +85,187 @@ function editRows(bookArray, columnAmt) {
     } 
 }
 
+function closeForm() {
+    const inputs = inputForm.querySelectorAll('.add-book-class')
+    inputs.forEach(formItem => {
+        console.log(inputForm.id)
+        inputForm.removeChild(formItem);
+    });
+}
+
+function addBookFromForm() {
+
+    let title = inputForm.querySelector('#title').value;
+    let author = inputForm.querySelector('#author').value;
+    let pageAmt = inputForm.querySelector('#pageAmt').value;
+    let isbn = inputForm.querySelector('#isbn').value;
+    let isRead = inputForm.querySelector('#is-read').checked;
+    let pubDate = inputForm.querySelector('#pub-date');
+
+    let book = new Book(title, author, pageAmt, isRead, isbn, pubDate)
+    myBooks = addBookToLibrary(book, myBooks)
+    closeForm();
+    renderBooks();
+    
+
+    // return false so the page is not reloaded
+    return false;
+}
+
 // Create and render new book form on screen
 // Input book information and add it to the array,
 // Call render books 
 function addBook(bookArray) {
 
 
-    book = new Book('add book', 'new writer', 999, false);
+/*
+    this.title = title;
+    this.author = author;
+    this.pageAmt = pageAmt;
+    this.isRead = isRead;
+    this.isbn = ISBN;
+    this.pubDate = pubDate;
+    this.notes = notes;
+*/
 
-    // Adding placeholder books to array of books
-    myBooks = addBookToLibrary(book, bookArray);
+    // create form and render to screen
+    inputForm;// input form
+
+    titleInput = document.createElement('input');
+    titleInput.id = 'title';
+    titleInput.className = 'add-book-class'
+    titleInput.type = 'text';
+    titleInput.name = 'title'
+    titleInput.maxLength = '40'
+    titleInput.placeholder = 'Book Title'
+    titleInput.required = 'true'
+    titleInput.style.width = inputSize
+    titleInput.style.height = '30px'
+    titleInput.style.textAlign = 'center'
+    titleInput.style.fontSize = '1em'
+    titleInput.style.alignSelf = 'center'
+    inputForm.appendChild(titleInput)
+
+    authorInput = document.createElement('input');
+    authorInput.id = 'author'
+    authorInput.className = 'add-book-class'
+    authorInput.type = 'text';
+    authorInput.name = 'author'
+    authorInput.maxLength = '40'
+    authorInput.placeholder = 'Author'
+    authorInput.required = 'true'
+    authorInput.style.width = inputSize
+    authorInput.style.height = '30px'
+    authorInput.style.textAlign = 'center'
+    authorInput.style.fontSize = '1em'
+    authorInput.style.alignSelf = 'center'
+    authorInput.style.marginTop = '10px'
+    inputForm.appendChild(authorInput)
+
+    pageAmtInput = document.createElement('input');
+    pageAmtInput.id = 'pageAmt'
+    pageAmtInput.className = 'add-book-class'
+    pageAmtInput.type = 'text';
+    pageAmtInput.name = 'page-amount'
+    pageAmtInput.maxLength = '40'
+    pageAmtInput.placeholder = 'Page Amount'
+    pageAmtInput.style.width = inputSize
+    pageAmtInput.style.height = '30px'
+    pageAmtInput.style.textAlign = 'center'
+    pageAmtInput.style.fontSize = '1em'
+    pageAmtInput.style.alignSelf = 'center'
+    pageAmtInput.style.marginTop = '10px'
+    inputForm.appendChild(pageAmtInput)
+
+    pubDateInput = document.createElement('input');
+    pubDateInput.id = 'pub-date'
+    pubDateInput.className = 'add-book-class'
+    pubDateInput.type = 'text';
+    pubDateInput.name = 'pub-date'
+    pubDateInput.maxLength = '40'
+    pubDateInput.placeholder = 'Publish Year'
+    pubDateInput.style.width = inputSize
+    pubDateInput.style.height = '30px'
+    pubDateInput.style.textAlign = 'center'
+    pubDateInput.style.fontSize = '1em'
+    pubDateInput.style.alignSelf = 'center'
+    pubDateInput.style.marginTop = '10px'
+    inputForm.appendChild(pubDateInput)
+
+    isbnInput = document.createElement('input');
+    isbnInput.id = 'isbn'
+    isbnInput.className = 'add-book-class'
+    isbnInput.type = 'text';
+    isbnInput.name = 'isbn'
+    isbnInput.maxLength = '40'
+    isbnInput.placeholder = 'ISBN'
+    isbnInput.style.width = inputSize
+    isbnInput.style.height = '30px'
+    isbnInput.style.textAlign = 'center'
+    isbnInput.style.fontSize = '1em'
+    isbnInput.style.alignSelf = 'center'
+    isbnInput.style.marginTop = '10px'
+    inputForm.appendChild(isbnInput)
+
+    isReadDiv = document.createElement('div')
+    isReadDiv.style.display = 'flex'
+    isReadDiv.className = 'add-book-class'
+    isReadDiv.style.flexDirection = 'row'
+    isReadDiv.style.justifyContent = 'center'
+    isReadDiv.style.marginTop = '10px'
+
+
+    isReadCheck = document.createElement('input')
+    isReadCheck.type = 'checkbox'
+    isReadCheck.id = 'is-read'
+    isReadCheck.name = 'read'
+    isReadCheck.textContent = 'read'
+
+    isReadLabel = document.createElement('label');
+    isReadLabel.for = 'is-read'
+    isReadLabel.textContent = 'Read';
+
+    isReadDiv.appendChild(isReadCheck);
+    isReadDiv.appendChild(isReadLabel);
+
+    inputForm.appendChild(isReadDiv)
+
+    submitButton = document.createElement('input');
+    submitButton.className = 'add-book-class'
+    submitButton.type = 'submit'
+    submitButton.name = 'submit-button'
+    submitButton.value = 'Submit'
+    submitButton.style.width = inputSize/2;
+    submitButton.style.height = '30px'
+    submitButton.style.textAlign = 'center'
+    submitButton.style.fontSize = '1em'
+    submitButton.style.backgroundColor = '#bc6c25'
+    submitButton.style.alignSelf = 'center'
+    submitButton.style.marginTop = '10px'
+    
+    inputForm.appendChild(submitButton)
+
+    submitButton.addEventListener('click', function() {
+        addBookFromForm();
+        closeForm();
+    })
+
 
     return bookArray;
 }
 
-// Render all the books in my array to the HTML doc
-function renderBooks(bookArray) {
+function removeOldBooks() {
+    oldBooks = bookDiv.querySelectorAll('div')
+    oldBooks.forEach(book => {
+        bookDiv.removeChild(book);
+    });
+}
 
-    editColumns(bookArray);
+// Render all the books in my array to the HTML doc
+function renderBooks() {
+
+    editColumns(myBooks);
+    removeOldBooks();
 
     // For each book, create a container
     // Add title, author to each container,
@@ -94,6 +278,7 @@ function renderBooks(bookArray) {
 
         // create container for book information
         bookCont = document.createElement('div');
+        bookCont.class = 'book';
         // bookCont.id = book.title;
         bookCont.style.display = 'flex';
         bookCont.style.flexDirection = 'column';
@@ -144,29 +329,31 @@ function renderBooks(bookArray) {
     });
 
     window.addEventListener("resize", function() {
-        editColumns(bookArray);
+        editColumns(myBooks);
     });
 
     btns = document.querySelectorAll('button');
     btns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            console.log(`${btn.id}`)
+        btn.onmouseup = function() {
             switch(btn.id) {
                 case('add-book'):
-                    myBooks = addBook(bookArray);
-                    renderBooks(myBooks);
+                    // console.log(`click`)
+                    
+                    myBooks = addBook(myBooks);
+                    renderBooks();
+
                     break;
                 case('search'):
                     break;
             }
-        })
+        }
     });
 
 }
 
+
 // Animation bool false if animation hasn't occured yet
 // Book Chosen bool false if no book has been chosen yet
-
 let animOpen = false;
 let bookChosen = false;
 
@@ -302,6 +489,7 @@ function makeFocusBook(book) {
 
 // Book container 
 bookDiv = document.querySelector('#book-container');
+inputForm = document.querySelector('#input')
 
 // Amount of rows on screen 
 let rowAmt = 0;
@@ -310,15 +498,15 @@ let columnAmt = 3;
 // Array of books to be printed on screen
 let myBooks = [];
 
-// Placeholder books
-book1 = new Book('Fuck', 'fucker', 4, false);
-book2 = new Book('Book that has an even longer title', 'shitter', 6, true);
-book3 = new Book('Book that has a long title', 'writer', 999, false);
+// // Placeholder books
+// book1 = new Book('Fuck', 'fucker', 4, false);
+// book2 = new Book('Book that has an even longer title', 'shitter', 6, true);
+// book3 = new Book('Book that has a long title', 'writer', 999, false);
 
-// Adding placeholder books to array of books
-myBooks = addBookToLibrary(book1, myBooks);
-myBooks = addBookToLibrary(book2, myBooks);
-myBooks = addBookToLibrary(book3, myBooks);
+// // Adding placeholder books to array of books
+// myBooks = addBookToLibrary(book1, myBooks);
+// myBooks = addBookToLibrary(book2, myBooks);
+// myBooks = addBookToLibrary(book3, myBooks);
 
 renderBooks(myBooks)
 
