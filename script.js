@@ -1,14 +1,14 @@
-
+let idNum =0;
 
 // Book object
-function Book(title, author, pageAmt, isRead, ISBN = '', pubDate = '0/0/0', notes = '') {
+function Book(title, author, pageAmt = 0, isRead = false, ISBN = '', pubDate = '') {
     this.title = title;
     this.author = author;
     this.pageAmt = pageAmt;
     this.isRead = isRead;
     this.isbn = ISBN;
     this.pubDate = pubDate;
-    this.notes = notes;
+    this.id = idNum++;
 }
 
 // Function to add a book to the array
@@ -100,12 +100,21 @@ function addBookFromForm() {
     let pageAmt = inputForm.querySelector('#pageAmt').value;
     let isbn = inputForm.querySelector('#isbn').value;
     let isRead = inputForm.querySelector('#is-read').checked;
-    let pubDate = inputForm.querySelector('#pub-date');
+    let pubDate = inputForm.querySelector('#pub-date').value;
+
+    if(title == '' || author == '') {
+        return false;
+    }
+
+    if(pageAmt == undefined) pageAmt = '';
+    if(isbn == undefined) isbn = '';
+    if(isRead == undefined) isRead = false;
+    if(pubDate == undefined) pubDate = '';
 
     let book = new Book(title, author, pageAmt, isRead, isbn, pubDate)
     myBooks = addBookToLibrary(book, myBooks)
     closeForm();
-    renderBooks();
+    renderBooks(myBooks);
     
 
     // return false so the page is not reloaded
@@ -117,20 +126,9 @@ function addBookFromForm() {
 // Call render books 
 function addBook(bookArray) {
 
+    closeForm()
 
-/*
-    this.title = title;
-    this.author = author;
-    this.pageAmt = pageAmt;
-    this.isRead = isRead;
-    this.isbn = ISBN;
-    this.pubDate = pubDate;
-    this.notes = notes;
-*/
-
-    // create form and render to screen
-    inputForm;// input form
-
+    // Create form to input book information
     titleInput = document.createElement('input');
     titleInput.id = 'title';
     titleInput.className = 'add-book-class'
@@ -223,6 +221,7 @@ function addBook(bookArray) {
 
     isReadLabel = document.createElement('label');
     isReadLabel.for = 'is-read'
+    isReadLabel.style.fontSize = '1em'
     isReadLabel.textContent = 'Read';
 
     isReadDiv.appendChild(isReadCheck);
@@ -254,6 +253,68 @@ function addBook(bookArray) {
     return bookArray;
 }
 
+function search(bookArray) {
+    closeForm()
+
+    searchInput = document.createElement('input');
+    searchInput.id = 'search';
+    searchInput.className = 'add-book-class' // add to this class so close form works
+    searchInput.type = 'text';
+    searchInput.name = 'search'
+    searchInput.maxLength = '40'
+    searchInput.placeholder = 'Search'
+    searchInput.required = 'true'
+    searchInput.style.width = inputSize
+    searchInput.style.height = '30px'
+    searchInput.style.textAlign = 'center'
+    searchInput.style.fontSize = '1em'
+    searchInput.style.alignSelf = 'center'
+    inputForm.appendChild(searchInput)
+
+    submitButton = document.createElement('input');
+    submitButton.className = 'add-book-class'
+    submitButton.type = 'submit'
+    submitButton.name = 'submit-button'
+    submitButton.value = 'Submit'
+    submitButton.style.width = inputSize/2;
+    submitButton.style.height = '30px'
+    submitButton.style.textAlign = 'center'
+    submitButton.style.fontSize = '1em'
+    submitButton.style.backgroundColor = '#bc6c25'
+    submitButton.style.alignSelf = 'center'
+    submitButton.style.marginTop = '10px'
+    
+    inputForm.appendChild(submitButton)
+
+    
+
+    let resultArray = [];
+    submitButton.addEventListener('click', function() {
+        let searchText = inputForm.querySelector('#search').value.toLowerCase()
+        if(searchText !== '') {
+            resultArray = [];
+            bookArray.forEach(book => {
+                if(book.title.toLowerCase().includes(searchText) || book.author.toLowerCase().includes(searchText)
+                || book.pageAmt.toLowerCase().includes(searchText) || book.isbn.toLowerCase().includes(searchText)
+                || book.pubDate.toLowerCase().includes(searchText)) {
+                    console.log(`${book.title} includes ${searchText}`)
+                    resultArray.push(book);
+
+                }
+            })
+            renderBooks(resultArray);
+        }
+    });
+    
+    return resultArray;
+}
+
+function clear() {
+    removeOldBooks();
+    closeForm();
+    renderBooks(myBooks);
+}
+
 function removeOldBooks() {
     oldBooks = bookDiv.querySelectorAll('div')
     oldBooks.forEach(book => {
@@ -261,10 +322,12 @@ function removeOldBooks() {
     });
 }
 
-// Render all the books in my array to the HTML doc
-function renderBooks() {
 
-    editColumns(myBooks);
+
+// Render all the books in my array to the HTML doc
+function renderBooks(bookArray) {
+
+    editColumns(bookArray);
     removeOldBooks();
 
     // For each book, create a container
@@ -274,17 +337,15 @@ function renderBooks() {
 
     let bkIndex = 0;
 
-    myBooks.forEach(book => {
+    bookArray.forEach(book => {
 
         // create container for book information
         bookCont = document.createElement('div');
         bookCont.class = 'book';
-        // bookCont.id = book.title;
         bookCont.style.display = 'flex';
         bookCont.style.flexDirection = 'column';
         bookCont.style.border = "1px solid #283618"
-
-        bookCont.id = bkIndex ++;
+        bookCont.id = book.id;
 
         // Add book title to the container
         bookHeader = document.createElement('h2');
@@ -298,11 +359,6 @@ function renderBooks() {
         bookAuthor.textContent = `by ${book.author}`
         bookCont.appendChild(bookAuthor)
 
-        // bookPageAmt = document.createElement('p');
-        // bookPageAmt.style.fontWeight = 'lighter';
-        // bookPageAmt.textContent = `Page Amount : ${book.pageAmt}`;
-        // bookCont.appendChild(bookPageAmt);
-
         bookCont.style.backgroundColor = '#606c38';
 
         // add each book to book container
@@ -312,6 +368,8 @@ function renderBooks() {
     // Add hover effect when mouse hovers over each book 
     const books = bookDiv.querySelectorAll('div');
     books.forEach(book => {
+
+        console.log(`book ID: ${book.id}`)
     
         book.onmouseover = function() {
             book.style.backgroundColor = '#283618'
@@ -322,14 +380,15 @@ function renderBooks() {
             book.style.color = 'black'
         }
 
+        // add click functionality
         book.addEventListener('click', function() {
-            animateClickBook(book);
+//            animateClickBook(book);
         });
     
     });
 
     window.addEventListener("resize", function() {
-        editColumns(myBooks);
+        editColumns(bookArray);
     });
 
     btns = document.querySelectorAll('button');
@@ -340,10 +399,17 @@ function renderBooks() {
                     // console.log(`click`)
                     
                     myBooks = addBook(myBooks);
-                    renderBooks();
+                    renderBooks(myBooks);
 
                     break;
                 case('search'):
+
+                    let searchBooks = search(bookArray);
+                    break;
+
+                case('clear'):
+                    clear();
+
                     break;
             }
         }
