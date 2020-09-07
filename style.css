@@ -1,6 +1,7 @@
 body {
     font-family: 'Raleway', sans-serif;
     background-color: #dda15e;
+    margin: 0;
 }
 
 header {
@@ -77,18 +78,18 @@ header h1 {
 }
 
 #click-book-container {
-    display: grid;
+    display: flex;
     justify-content: center;
-    grid-template-columns: 90vw;
+    width: 100vw;
+    margin-left: 0px;
 
     /* only do if has information */
-    grid-template-rows: 0px;
 }
 
 #form-container {
     display: flex;
     width: 100vw;
-    flex-direction: column;
+    flex-direction: row;
     align-content: center;
     justify-content: center;
 }
@@ -99,11 +100,32 @@ header h1 {
     flex-direction: column;
     align-content: center;
     justify-content: center;
+
+
 }
 
-#test {
+#input input {
+    height: 30px;
+    text-align: center;
+    font-size: 1em;
+    align-self: center;
+    /* margin-top: 10px; */
+}
+
+#book-form {
+    position: fixed;
     display: flex;
     flex-direction: row;
-    align-content: center;
+    justify-content: center;
+    top: 12vh;
     width: 100vw;
 }
+
+/* #test-cont {
+    display: grid;
+    grid-template-columns: ;
+    grid-template-rows: ;
+    width: 90vw;
+    height: 400px;
+    border: 1px solid black;
+} */
