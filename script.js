@@ -24,8 +24,18 @@ function getBookById(index) {
     return myBooks[index];
 }
 
+function removeBook(index) {
+    myBooks.forEach(book => {
+        if(book.id >= index) {
+            book.id--;
+        }
+    })
+    myBooks.splice(index, 1);
+}
+
 // edit amount of columns if the width is too small/ too large
 let inputSize = '50vw';
+let clickBookSize = '52vw';
 function editColumns(bookArray) {
 
     console.log(`edit columns run`)
@@ -35,14 +45,18 @@ function editColumns(bookArray) {
     
     // input type to add resize funtionality
     const input = document.querySelectorAll('.add-book-class')
+    const clickBookCont = document.querySelector('#click-book-div')
     if (bodyWidth >= 1050) {
         inputSize = '50vw'
+        clickBookSize = '52vw'
         columnAmt = 3;
     } else if (bodyWidth < 1050 && bodyWidth >= 700) {
         inputSize = '65vw'
+        clickBookSize = '67vw'
         columnAmt = 2;
     } else if (bodyWidth < 700) {
         inputSize = '80vw'
+        clickBookSize = '82vw'
         columnAmt = 1;
     }  
     switch(columnAmt) {
@@ -55,6 +69,9 @@ function editColumns(bookArray) {
         case(1):
             columnSize = `90vw`
             break;
+    }
+    if(!clickBookCont == undefined) {
+        clickBookCont.style.width = clickBookSize;
     }
     // if(input) {
     input.forEach(cont => {
@@ -127,17 +144,121 @@ function addBookFromForm() {
 }
 
 function bookClickForm(bookId) {
+
+    book = getBookById(bookId)
+    console.log(bookId)
     
     bookClickDiv = document.createElement('div')
+    bookClickDiv.id = 'click-book-div'
     bookClickDiv.style.height = '200px'
-    bookClickDiv.style.width = '75vw'
-    bookClickDiv.style.backgroundColor = 'white'
+    bookClickDiv.style.width = clickBookSize
+    bookClickDiv.style.backgroundColor = '#606c38'
     bookClickDiv.style.border = '1px solid black'
-    bookClickDiv.justifySelf = 'center'
+    bookClickDiv.style.justifySelf = 'center'
+    bookClickDiv.style.justifyContent = 'center'
+    bookClickDiv.style.alignContent = 'center'
+    bookClickDiv.style.display = 'grid'
+    bookClickDiv.style.gridTemplateColumns = '100%'
+    bookClickDiv.style.gridTemplateRows = '20% 40% 40%'
+    // bookClickDiv.
+
+    buttonCont = document.createElement('div')
+    buttonCont.style.display = 'grid'
+    buttonCont.style.gridTemplateColumns= '10% 80% 10'
+    
+    isReadButton = document.createElement('button')
+    isReadButton.id = 'is-read-button'
+    if(book.isRead) {
+        isReadButton.textContent = 'Read'
+    } else {
+        isReadButton.textContent = 'Not Read'
+    }
+    isReadButton.style.width = '50%'
+    isReadButton.style.gridColumnStart = '1'
+    isReadButton.style.gridColumnEnd = '2'
+    isReadButton.style.margin = '1vmin'
+    isReadButton.style.backgroundColor = '#bc6c25'
+
+    closeButton = document.createElement('button')
+    closeButton.id = 'close-button'
+    closeButton.textContent = 'Close'
+    closeButton.style.width = '50%'
+    closeButton.style.gridColumnStart = '3'
+    closeButton.style.gridColumnEnd = '4'
+    closeButton.style.justifySelf = 'end'
+    closeButton.style.margin = '1vmin'
+    closeButton.style.backgroundColor = '#bc6c25'
+
+    removeButton = document.createElement('button')
+    removeButton.id = 'remove-button'
+    removeButton.textContent = 'Remove'
+    removeButton.style.width = '%50'
+    removeButton.style.justifySelf = 'center'
+    removeButton.style.margin = '1vmin'
+    removeButton.style.backgroundColor = '#bc6c25'
+    
+    buttonCont.appendChild(isReadButton)
+    buttonCont.appendChild(removeButton)
+    buttonCont.appendChild(closeButton)
+
+    bookInfoCont = document.createElement('div')
+    bookInfoCont.style.display = 'flex'
+    bookInfoCont.style.flexDirection = 'row'
+    bookInfoCont.style.justifyContent = 'center'
+
+    bookInfoCont2 = document.createElement('div')
+    bookInfoCont2.style.display = 'flex'
+    bookInfoCont2.style.flexDirection = 'row'
+    bookInfoCont2.style.justifyContent = 'center'
+
+    bookTitle = document.createElement('h2')
+    bookTitle.textContent = book.title
+
+    bookAuthor = document.createElement('p');
+    bookAuthor.style.fontStyle = 'italic'
+    if(book.pageAmt > 0) {
+        bookAuthor.textContent = `by ${book.author} ... ${book.pageAmt} pages`
+    } else {
+        bookAuthor.textContent = `by ${book.author}`
+    }
+
+    bookInfoCont.appendChild(bookTitle)
+    bookInfoCont2.appendChild(bookAuthor)
+
+    bookClickDiv.appendChild(buttonCont)
+    bookClickDiv.appendChild(bookInfoCont)
+    bookClickDiv.appendChild(bookInfoCont2)
+
 
     bookFormDiv.appendChild(bookClickDiv)
 
-    console.log(`REMOVE OR MAKE READ for ID: ${bookId}`)
+    btns = bookFormDiv.querySelectorAll('button')
+    btns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            console.log(btn.id)
+
+            switch(btn.id) {
+                case('is-read-button'):
+                    myBooks[bookId].isRead = !myBooks[bookId].isRead
+                    if(myBooks[bookId].isRead)
+                        btn.textContent = 'Read'
+                    else 
+                        btn.textContent = 'Not Read'
+                    break;
+                case('close-button'):
+                    bookFormDiv.removeChild(bookClickDiv)
+                    renderBooks(myBooks);
+                    break;
+                case('remove-button'):
+                    removeBook(bookId);
+                    bookFormDiv.removeChild(bookClickDiv)
+                    renderBooks(myBooks)
+                    break;
+            }
+        })
+    });
+
+    // console.log(`REMOVE OR MAKE READ for ID: ${bookId}`)
 }
 
 // Create and render new book form on screen
@@ -343,7 +464,11 @@ function renderBooks(bookArray) {
         // Add book author to the container
         bookAuthor = document.createElement('p');
         bookAuthor.style.fontStyle = 'italic'
+        if(book.pageAmt > 0) {
         bookAuthor.textContent = `by ${book.author} ... ${book.pageAmt} pages`
+        } else {
+            bookAuthor.textContent = `by ${book.author}`
+        }
         bookCont.appendChild(bookAuthor)
 
         bookCont.style.backgroundColor = '#606c38';
@@ -418,10 +543,11 @@ let columnAmt = 3;
 // Array of books to be printed on screen
 let myBooks = [];
 
-book = new Book('title', 'author', '123', true)
 
-for(let i=0; i<12; i++)
-    myBooks = addBookToLibrary(book, myBooks)
+// for(let i=0; i<12; i++) {
+//     book = new Book('title', 'author', '123', true)
+//     myBooks = addBookToLibrary(book, myBooks)
+// }
 
 renderBooks(myBooks)
 
