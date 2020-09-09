@@ -143,10 +143,15 @@ function addBookFromForm() {
     return false;
 }
 
+let clicked = false;
+
 function bookClickForm(bookId) {
 
+    if(!clicked) {
+        clicked = true;
+
     book = getBookById(bookId)
-    console.log(bookId)
+    // console.log(bookId)
     
     bookClickDiv = document.createElement('div')
     bookClickDiv.id = 'click-book-div'
@@ -247,17 +252,19 @@ function bookClickForm(bookId) {
                     break;
                 case('close-button'):
                     bookFormDiv.removeChild(bookClickDiv)
+                    clicked = false
                     renderBooks(myBooks);
                     break;
                 case('remove-button'):
                     removeBook(bookId);
                     bookFormDiv.removeChild(bookClickDiv)
+                    clicked = false
                     renderBooks(myBooks)
                     break;
             }
         })
     });
-
+    }
     // console.log(`REMOVE OR MAKE READ for ID: ${bookId}`)
 }
 
