@@ -38,7 +38,7 @@ let inputSize = '50vw';
 let clickBookSize = '52vw';
 function editColumns(bookArray) {
 
-    console.log(`edit columns run`)
+    // console.log(`edit columns run`)
 
     // decide how many rows and columns are needed
     let bodyWidth = document.body.clientWidth + 31;
@@ -75,7 +75,7 @@ function editColumns(bookArray) {
     }
     // if(input) {
     input.forEach(cont => {
-        console.log(`container id: ${cont.id}`)
+        // console.log(`container id: ${cont.id}`)
         if(cont.type == 'submit') {
             cont.style.width = inputSize/2;
         } else if (cont.type == 'checkbox' || cont.id == 'bottom-row-input') {
@@ -146,6 +146,8 @@ function addBookFromForm() {
 let clicked = false;
 
 function bookClickForm(bookId) {
+
+    // console.log(clicked)
 
     if(!clicked) {
         clicked = true;
@@ -240,7 +242,7 @@ function bookClickForm(bookId) {
     btns = bookFormDiv.querySelectorAll('button')
     btns.forEach(btn => {
         btn.addEventListener('click', function() {
-            console.log(btn.id)
+            // console.log(btn.id)
 
             switch(btn.id) {
                 case('is-read-button'):
@@ -503,7 +505,7 @@ function renderBooks(bookArray) {
         // add click functionality - ------------------------------------------ EDIT THIS TO 
         //                                                                      JUST REMOVE THE BOOK
         book.addEventListener('click', function() {
-            console.log(`${book.id} clicked`)
+            // console.log(`${book.id} clicked`)
             bookClickForm(book.id)
         });
     
