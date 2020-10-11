@@ -46,18 +46,23 @@ function editColumns(bookArray) {
     // input type to add resize funtionality
     const input = document.querySelectorAll('.add-book-class')
     const clickBookCont = document.querySelector('#click-book-div')
+    const headerText = document.querySelector('header h1')
     if (bodyWidth >= 1050) {
         inputSize = '50vw'
         clickBookSize = '52vw'
         columnAmt = 3;
+        headerText.style.fontSize = '28px'
     } else if (bodyWidth < 1050 && bodyWidth >= 700) {
         inputSize = '65vw'
         clickBookSize = '67vw'
         columnAmt = 2;
+        headerText.style.fontSize = '22px'
     } else if (bodyWidth < 700) {
         inputSize = '80vw'
         clickBookSize = '82vw'
         columnAmt = 1;
+        headerText.style.fontSize = '18px'
+
     }  
     switch(columnAmt) {
         case(3):
