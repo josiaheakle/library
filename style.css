@@ -25,6 +25,14 @@ header h1 {
     margin-block-end: 1vh;
 }
 
+#portfolio-link {
+    text-decoration: none;
+    color: white;
+    padding-left: 2vw;
+    justify-self: center;
+    align-self: center;
+}
+
 @media only screen and (max-width: 281px) {
     header h1 {
         font-size: 3vh;
